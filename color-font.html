@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <title>色彩與字形介紹 Q&A</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      :root {
+        --bg: #f4f5fb;
+        --card-bg: #fff;
+        --accent: #4c6fff;
+        --accent-soft: #e3e7ff;
+        --text-main: #1f2933;
+        --text-sub: #6b7280;
+        --border-soft: #e5e7eb;
+        --shadow-soft: 0 12px 25px rgba(15, 23, 42, 0.08);
+        --radius-lg: 18px;
+        --radius-full: 999px;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif, "Microsoft JhengHei";
+        background: radial-gradient(
+          circle at top,
+          #eef0ff 0,
+          #f9fafb 50%,
+          #f4f5fb 100%
+        );
+        color: var(--text-main);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px 16px;
+      }
+      .wrapper {
+        width: 100%;
+        max-width: 960px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 28px;
+        box-shadow: 0 24px 50px rgba(15, 23, 42, 0.16);
+        padding: 24px 20px 20px;
+        backdrop-filter: blur(18px);
+      }
+      header {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 18px;
+        border-bottom: 1px solid var(--border-soft);
+        padding-bottom: 12px;
+      }
+      .back-link {
+        font-size: 14px;
+        text-decoration: none;
+        color: var(--accent);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: var(--accent-soft);
+        padding: 5px 10px;
+        border-radius: var(--radius-full);
+        width: fit-content;
+      }
+      h1 {
+        font-size: 22px;
+        letter-spacing: 0.03em;
+      }
+      .subtitle {
+        font-size: 14px;
+        color: var(--text-sub);
+      }
+      main {
+        margin-top: 12px;
+      }
+      .qa {
+        background: var(--card-bg);
+        border-radius: var(--radius-lg);
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        box-shadow: var(--shadow-soft);
+        padding: 16px 18px;
+        margin-bottom: 14px;
+      }
+      .q {
+        font-weight: 600;
+        margin-bottom: 8px;
+        font-size: 15px;
+      }
+      .a {
+        font-size: 14px;
+        color: var(--text-sub);
+        line-height: 1.6;
+      }
+      code {
+        font-family: "SFMono-Regular", ui-monospace, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        background: #f3f4ff;
+        padding: 2px 4px;
+        border-radius: 4px;
+        font-size: 13px;
+      }
+      pre {
+        background: #0f172a;
+        color: #e5e7eb;
+        padding: 10px 12px;
+        border-radius: 10px;
+        overflow-x: auto;
+        font-size: 13px;
+        margin-top: 6px;
+      }
+      footer {
+        margin-top: 12px;
+        font-size: 12px;
+        color: #9ca3af;
+        text-align: right;
+      }
+      @media (max-width: 480px) {
+        body {
+          padding: 16px 10px;
+        }
+        .wrapper {
+          border-radius: 20px;
+          padding: 18px 14px 14px;
+        }
+        h1 {
+          font-size: 19px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <a class="back-link" href="index.html">← 回首頁</a>
+        <h1>色彩與字形介紹 Q&A</h1>
+        <p class="subtitle">配色與文字樣式的小技巧。</p>
+      </header>
+
+      <main>
+        <section class="qa">
+          <div class="q">Q1：怎麼選一組安全又好看的字型？</div>
+          <div class="a">
+            <p>常見的做法會寫一串「字型 fallback」：</p>
+            <pre>
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont,
+               "Segoe UI", sans-serif, "Microsoft JhengHei";
+}</pre
+            >
+            <p>
+              意思是：如果前面沒有，就用後面的；確保在 Windows / Mac /
+              手機看起來都還算正常。
+            </p>
+          </div>
+        </section>
+
+        <section class="qa">
+          <div class="q">Q2：文字顏色要怎麼選才不會太刺眼？</div>
+          <div class="a">
+            <ul>
+              <li>
+                不要用純黑 <code>#000000</code> + 純白
+                <code>#ffffff</code>，對比太強。
+              </li>
+              <li>
+                可以改用稍微軟一點的顏色，例如字用 <code>#1f2933</code> 或
+                <code>#374151</code>。
+              </li>
+            </ul>
+            這樣看久比較不累。
+          </div>
+        </section>
+
+        <section class="qa">
+          <div class="q">Q3：標題跟內文要怎麼區分層級？</div>
+          <div class="a">
+            <p>可以同時調整：</p>
+            <ul>
+              <li>字體大小（font-size）</li>
+              <li>字重（font-weight）</li>
+              <li>顏色深淺（標題深一點、內文淡一點）</li>
+            </ul>
+            例如：
+            <pre>
+h1 {
+  font-size: 28px;
+  font-weight: 700;
+}
+p {
+  font-size: 14px;
+  color: #6b7280;
+}</pre
+            >
+          </div>
+        </section>
+      </main>
+
+      <footer>Lucky_Jan 的 HTML 學習園地 · 色彩與字形介紹</footer>
+    </div>
+  </body>
+</html>

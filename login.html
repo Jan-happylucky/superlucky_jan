@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>登入｜Lucky_JAN 的學習園地</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #f4f5fb;
+      --card-bg: #ffffff;
+      --accent: #4c6fff;
+      --accent-soft: #e3e7ff;
+      --text-main: #1f2933;
+      --text-sub: #6b7280;
+      --border-soft: #e5e7eb;
+      --shadow-soft: 0 12px 25px rgba(15, 23, 42, 0.08);
+      --radius-lg: 18px;
+      --radius-full: 999px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif, "Microsoft JhengHei";
+      background: radial-gradient(circle at top, #eef0ff 0, #f9fafb 50%, #f4f5fb 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 460px;
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 28px;
+      box-shadow: 0 24px 50px rgba(15, 23, 42, 0.2);
+      padding: 26px 22px 22px;
+      backdrop-filter: blur(18px);
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4c6fff, #7f5dff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 22px;
+      box-shadow: 0 14px 25px rgba(79, 70, 229, 0.4);
+      flex-shrink: 0;
+    }
+
+    .logo-text h1 {
+      font-size: 20px;
+      letter-spacing: 0.03em;
+      margin-bottom: 4px;
+    }
+
+    .logo-text p {
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    .tagline {
+      font-size: 12px;
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-radius: var(--radius-full);
+      padding: 6px 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .tag-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .login-card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      box-shadow: var(--shadow-soft);
+      padding: 18px 16px 16px;
+    }
+
+    .login-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .login-sub {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-bottom: 14px;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+      color: var(--text-main);
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 1px solid var(--border-soft);
+      font-size: 14px;
+      outline: none;
+      transition: border 0.15s ease-out, box-shadow 0.15s ease-out;
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+      border-color: rgba(79, 70, 229, 0.8);
+      box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.4);
+    }
+
+    .btn {
+      width: 100%;
+      border: none;
+      border-radius: 999px;
+      padding: 9px 16px;
+      margin-top: 6px;
+      background: linear-gradient(135deg, #4c6fff, #7f5dff);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 8px 16px rgba(79, 70, 229, 0.45);
+      transition: transform 0.12s ease-out, box-shadow 0.12s ease-out,
+        filter 0.12s ease-out;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 22px rgba(79, 70, 229, 0.55);
+      filter: brightness(1.02);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 10px rgba(79, 70, 229, 0.4);
+    }
+
+    .hint {
+      font-size: 12px;
+      color: var(--text-sub);
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+
+    .hint code {
+      background: #f3f4ff;
+      padding: 1px 4px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    .error {
+      font-size: 12px;
+      color: #dc2626;
+      margin-top: 6px;
+      min-height: 1em;
+    }
+
+    .to-index {
+      margin-top: 10px;
+      font-size: 12px;
+      text-align: right;
+    }
+
+    .to-index a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .to-index a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      margin-top: 14px;
+      font-size: 11px;
+      color: #9ca3af;
+      text-align: right;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 16px 10px;
+      }
+      .wrapper {
+        border-radius: 20px;
+        padding: 20px 14px 16px;
+      }
+      .logo-text h1 {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="logo-area">
+      <div class="avatar">LJ</div>
+      <div class="logo-text">
+        <h1>Lucky_JAN 的學習園地</h1>
+        <p>HTML · CSS · JavaScript 練習專區</p>
+      </div>
+    </div>
+
+    <div class="tagline">
+      <span class="tag-dot"></span>
+      <span>登入後進入 10 宮格主頁</span>
+    </div>
+
+    <div class="login-card">
+      <div class="login-title">登入</div>
+      <div class="login-sub">請輸入練習用的帳號與密碼（純前端示範，不是真的會員系統）。</div>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label for="username">帳號</label>
+          <input type="text" id="username" autocomplete="off" />
+        </div>
+
+        <div class="form-group">
+          <label for="password">密碼</label>
+          <input type="password" id="password" autocomplete="off" />
+        </div>
+
+        <button type="submit" class="btn">登入並前往主頁</button>
+        <div id="error" class="error"></div>
+      </form>
+
+      <p class="hint">
+        預設帳號密碼（可在程式中修改）：<br>
+        帳號：<code>student</code>　密碼：<code>1234</code>
+      </p>
+
+      <div class="to-index">
+        或者直接看主頁：<a href="index.html">前往 10 宮格首頁</a>
+      </div>
+    </div>
+
+    <footer>
+      © 2025 Lucky_JAN · Login Demo (前端假登入)
+    </footer>
+  </div>
+
+  <script>
+    // 你可以在這裡改「練習用帳號與密碼」
+    const VALID_USERNAME = "student";
+    const VALID_PASSWORD = "1234";
+
+    const form = document.getElementById("login-form");
+    const errorEl = document.getElementById("error");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (!username || !password) {
+        errorEl.textContent = "請先輸入帳號與密碼。";
+        return;
+      }
+
+      if (username === VALID_USERNAME && password === VALID_PASSWORD) {
+        errorEl.textContent = "";
+        // 登入成功，導向主頁（10 宮格）
+        window.location.href = "index.html";
+      } else {
+        errorEl.textContent = "帳號或密碼錯誤（提示：試試看 student / 1234）";
+      }
+    });
+  </script>
+</body>
+</html>
