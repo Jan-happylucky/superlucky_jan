@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lucky_JAN 的 HTML 學習園地</title>
+  <style>
+    :root {
+      --bg: #f4f5fb;
+      --card-bg: #ffffff;
+      --accent: #4c6fff;
+      --accent-soft: #e3e7ff;
+      --text-main: #1f2933;
+      --text-sub: #6b7280;
+      --border-soft: #e5e7eb;
+      --shadow-soft: 0 12px 25px rgba(15, 23, 42, 0.08);
+      --radius-lg: 18px;
+      --radius-full: 999px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif, "Microsoft JhengHei";
+      background: radial-gradient(circle at top, #eef0ff 0, #f9fafb 50%, #f4f5fb 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 1080px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 28px;
+      box-shadow: 0 24px 50px rgba(15, 23, 42, 0.16);
+      padding: 24px 20px 20px;
+      backdrop-filter: blur(18px);
+    }
+
+    @media (min-width: 640px) {
+      .wrapper {
+        padding: 28px 32px 24px;
+      }
+    }
+
+    header {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border-soft);
+      padding-bottom: 18px;
+    }
+
+    @media (min-width: 640px) {
+      header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .avatar {
+      width: 160px;
+      height:160px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4c6fff, #7f5dff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 24px;
+      box-shadow: 0 14px 25px rgba(79, 70, 229, 0.4);
+      flex-shrink: 0;
+    }
+
+    .profile-text h1 {
+      font-size: 22px;
+      letter-spacing: 0.03em;
+      margin-bottom: 4px;
+    }
+
+    .profile-text p {
+      font-size: 14px;
+      color: var(--text-sub);
+    }
+
+    .tagline {
+      text-align: left;
+      font-size: 13px;
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-radius: var(--radius-full);
+      padding: 6px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      align-self: flex-start;
+      white-space: nowrap;
+    }
+
+    .tag-pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    main {
+      margin-top: 18px;
+    }
+
+    .sub-title {
+      font-size: 14px;
+      color: var(--text-sub);
+      margin-bottom: 16px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    @media (min-width: 640px) {
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 960px) {
+      .grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 16px 14px 14px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: var(--shadow-soft);
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: transform 0.15s ease-out, box-shadow 0.15s ease-out,
+        border 0.15s ease-out, background 0.15s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(79, 70, 229, 0.06), transparent);
+      opacity: 0;
+      transition: opacity 0.15s ease-out;
+      pointer-events: none;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 22px 40px rgba(15, 23, 42, 0.18);
+      border-color: rgba(79, 70, 229, 0.55);
+      background: #ffffff;
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .card-index {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent);
+      background: rgba(79, 70, 229, 0.08);
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--text-sub);
+      line-height: 1.4;
+      min-height: 2.5em;
+    }
+
+    .card-footer {
+      margin-top: 4px;
+      font-size: 12px;
+      color: #9ca3af;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-arrow {
+      margin-left: auto;
+      font-size: 16px;
+    }
+
+    footer {
+      margin-top: 22px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--border-soft);
+      font-size: 12px;
+      color: #9ca3af;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    footer span {
+      white-space: nowrap;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 16px 10px;
+      }
+      .wrapper {
+        border-radius: 20px;
+        padding: 18px 14px 14px;
+      }
+      .avatar {
+        width: 60px;
+        height: 60px;
+        font-size: 20px;
+      }
+      .profile-text h1 {
+        font-size: 19px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <header>
+      <div class="profile">
+        <!-- 這裡如果有自己的大頭照，可以改成 <img src="your-photo.jpg" class="avatar"> -->
+        <img
+            src="https://i.scdn.co/image/faf9d7464202a9d9860c9db3fce66755ec19f74c"
+            class="avatar"
+          />
+        <div class="profile-text">
+          <h1>Lucky_JAN 的 HTML 學習園地</h1>
+          <p>HTML / CSS / JavaScript 教學與練習資源 · GitHub Pages 線上作品</p>
+        </div>
+      </div>
+      <div class="tagline">
+        <span class="tag-pill-dot"></span>
+        <span>10 宮格導覽｜HTML · CSS · JS 主題速查</span>
+      </div>
+    </header>
+
+    <main>
+      <p class="sub-title">
+        點選底下卡片，可以快速前往各單元：HTML 基本架構、常用標籤、超連結、圖片、CSS 語法、版型排版、配色、RWD，以及 JavaScript 陣列應用。
+      </p>
+
+      <section class="grid">
+        <!-- 1 -->
+        <a class="card" href="html-basic.html">
+          <div class="card-header">
+            <span class="card-index">01</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <h2 class="card-title">HTML 基本架構</h2>
+          <p class="card-desc">從 <code>&lt;!DOCTYPE&gt;</code> 到 <code>&lt;body&gt;</code>，一次了解網頁的骨架。</p>
+          <div class="card-footer">
+            <span>基礎入門</span>
+          </div>
+        </a>
+
+        <!-- 2 -->
+        <a class="card" href="tags.html">
+          <div class="card-header">
+            <span class="card-index">02</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <h2 class="card-title">常用標籤介紹</h2>
+          <p class="card-desc">標題、段落、清單、表格…快速認識最常見的 HTML 標籤。</p>
+          <div class="card-footer">
+            <span>標籤大全</span>
+          </div>
+        </a>
+
+        <!-- 3 -->
+        <a class="card" href="link-image.html">
+          <div class="card-header">
+            <span class="card-index">03</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <h2 class="card-title">超連結與圖片</h2>
+          <p class="card-desc">加入圖片、做出可點擊的連結與按鈕，讓網頁活起來。</p>
+          <div class="card-footer">
+            <span>多媒體</span>
+          </div>
+        </a>
+
+        <!-- 4 -->
+        <a class="card" href="css-intro.html">
+          <div class="card-header">
+            <span class="card-index">04</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <h2 class="card-title">CSS 語法介紹</h2>
+          <p class="card-desc">學習 selector、屬性與值，開始幫你的網頁換新衣。</p>
+          <div class="card-footer">
+            <span>樣式設計</span>
+          </div>
+        </a>
+
+        <!-- 5 -->
+        <a class="card" href="css-common.html">
+          <div class="card-header">
+            <span class="card-index">05</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <h2 class="card-title">常用 CSS 語法推薦</h2>
+          <p class="card-desc">顏色、字型、間距、邊框與陰影，實用又好記的 CSS 清單。</p>
+          <div class="card-footer">
+            <span>實戰必備</span>
+          </div>
+        </a>
+
+        <!-- 6 -->
+        <a class="card" href="hosting.html">
+          <div class="card-header">
+            <span class="card-index">06</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <h2 class="card-title">免費網頁空間介紹</h2>
+          <p class="card-desc">認識 GitHub Pages 等免費空間，把你的作品放上網給大家看。</p>
+          <div class="card-footer">
+            <span>發布作品</span>
+          </div>
+        </a>
+
+        <!-- 7 -->
+        <a class="card" href="layout.html">
+          <div class="card-header">
+            <span class="card-index">07</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <h2 class="card-title">版型與排版介紹</h2>
+          <p class="card-desc">Flex、Grid、版心與留白，讓版型更清楚、內容更好讀。</p>
+          <div class="card-footer">
+            <span>版面設計</span>
+          </div>
+        </a>
+
+        <!-- 8 -->
+        <a class="card" href="color-font.html">
+          <div class="card-header">
+            <span class="card-index">08</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <h2 class="card-title">色彩與字形介紹</h2>
+          <p class="card-desc">配色技巧、中文字型，小細節讓網站質感大加分。</p>
+          <div class="card-footer">
+            <span>視覺風格</span>
+          </div>
+        </a>
+
+        <!-- 9 -->
+        <a class="card" href="grid-demo.html">
+          <div class="card-header">
+            <span class="card-index">09</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <h2 class="card-title">九宮格 / RWD 示範</h2>
+          <p class="card-desc">說明這個首頁的 RWD 九宮格排版是怎麼完成的。</p>
+          <div class="card-footer">
+            <span>RWD Demo</span>
+          </div>
+        </a>
+
+        <!-- 10 -->
+        <a class="card" href="javascript-array.html">
+          <div class="card-header">
+            <span class="card-index">10</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <h2 class="card-title">JavaScript 陣列</h2>
+          <p class="card-desc">陣列宣告、處理方法與平均分數等實際應用。</p>
+          <div class="card-footer">
+            <span>JavaScript</span>
+          </div>
+        </a>
+      </section>
+    </main>
+
+    <footer>
+      <span>© 2025 Lucky_JAN 的 HTML 學習園地</span>
+      <span>Built with VS Code · GitHub Pages · RWD 10 宮格版</span>
+    </footer>
+  </div>
+</body>
+</html>

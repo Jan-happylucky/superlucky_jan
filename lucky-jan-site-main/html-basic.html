@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <title>HTML 基本架構 Q&A</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      :root {
+        --bg: #f4f5fb;
+        --card-bg: #ffffff;
+        --accent: #4c6fff;
+        --accent-soft: #e3e7ff;
+        --text-main: #1f2933;
+        --text-sub: #6b7280;
+        --border-soft: #e5e7eb;
+        --shadow-soft: 0 12px 25px rgba(15, 23, 42, 0.08);
+        --radius-lg: 18px;
+        --radius-full: 999px;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif, "Microsoft JhengHei";
+        background: radial-gradient(
+          circle at top,
+          #eef0ff 0,
+          #f9fafb 50%,
+          #f4f5fb 100%
+        );
+        color: var(--text-main);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px 16px;
+      }
+      .wrapper {
+        width: 100%;
+        max-width: 960px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 28px;
+        box-shadow: 0 24px 50px rgba(15, 23, 42, 0.16);
+        padding: 24px 20px 20px;
+        backdrop-filter: blur(18px);
+      }
+      header {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 18px;
+        border-bottom: 1px solid var(--border-soft);
+        padding-bottom: 12px;
+      }
+      .back-link {
+        font-size: 14px;
+        text-decoration: none;
+        color: var(--accent);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: var(--accent-soft);
+        padding: 5px 10px;
+        border-radius: var(--radius-full);
+        width: fit-content;
+      }
+      h1 {
+        font-size: 22px;
+        letter-spacing: 0.03em;
+      }
+      .subtitle {
+        font-size: 14px;
+        color: var(--text-sub);
+      }
+      main {
+        margin-top: 12px;
+      }
+      .qa {
+        background: var(--card-bg);
+        border-radius: var(--radius-lg);
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        box-shadow: var(--shadow-soft);
+        padding: 16px 18px;
+        margin-bottom: 14px;
+      }
+      .q {
+        font-weight: 600;
+        margin-bottom: 8px;
+        font-size: 15px;
+      }
+      .a {
+        font-size: 14px;
+        color: var(--text-sub);
+        line-height: 1.6;
+      }
+      code {
+        font-family: "SFMono-Regular", ui-monospace, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        background: #f3f4ff;
+        padding: 2px 4px;
+        border-radius: 4px;
+        font-size: 13px;
+      }
+      pre {
+        background: #0f172a;
+        color: #e5e7eb;
+        padding: 10px 12px;
+        border-radius: 10px;
+        overflow-x: auto;
+        font-size: 13px;
+        margin-top: 6px;
+      }
+      footer {
+        margin-top: 12px;
+        font-size: 12px;
+        color: #9ca3af;
+        text-align: right;
+      }
+      @media (max-width: 480px) {
+        body {
+          padding: 16px 10px;
+        }
+        .wrapper {
+          border-radius: 20px;
+          padding: 18px 14px 14px;
+        }
+        h1 {
+          font-size: 19px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <a class="back-link" href="index.html">← 回首頁</a>
+        <h1>HTML 基本架構 Q&A</h1>
+        <p class="subtitle">
+          關於 <code>&lt;html&gt;</code>、<code>&lt;head&gt;</code>、<code
+            >&lt;body&gt;</code
+          >
+          的常見問題與解答。
+        </p>
+      </header>
+
+      <main>
+        <section class="qa">
+          <div class="q">Q1：一份最基本的 HTML 網頁一定要有哪些標籤？</div>
+          <div class="a">
+            一般來說，最基本的 HTML 架構會包含這幾個部分：
+            <pre>
+&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-Hant"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;我的第一個網頁&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  這裡是網頁的內容
+&lt;/body&gt;
+&lt;/html&gt;</pre
+            >
+            <br />
+            <strong>重點：</strong>
+            <ul>
+              <li>
+                <code>&lt;!DOCTYPE html&gt;</code>：告訴瀏覽器這是 HTML5。
+              </li>
+              <li>
+                <code>&lt;head&gt;</code
+                >：放網頁的「設定、資訊」，不是可見內容。
+              </li>
+              <li><code>&lt;body&gt;</code>：使用者真正看到的內容都放這裡。</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="qa">
+          <div class="q">
+            Q2：為什麼要加 <code>lang="zh-Hant"</code> 跟
+            <code>&lt;meta charset="UTF-8"&gt;</code>？
+          </div>
+          <div class="a">
+            <p>
+              <code>lang="zh-Hant"</code>
+              是告訴瀏覽器「這個網頁主要是繁體中文」，有助於：
+            </p>
+            <ul>
+              <li>搜尋引擎理解內容語言</li>
+              <li>螢幕報讀器（給視障者用的）正確發音</li>
+            </ul>
+            <br />
+            <p>
+              <code>&lt;meta charset="UTF-8"&gt;</code>
+              是設定「文字編碼」，如果沒設好，中文可能會變亂碼。
+            </p>
+          </div>
+        </section>
+
+        <section class="qa">
+          <div class="q">
+            Q3：<code>&lt;head&gt;</code> 跟
+            <code>&lt;body&gt;</code> 差在哪裡？
+          </div>
+          <div class="a">
+            <p>可以把一個網頁想像成一個「人」：</p>
+            <ul>
+              <li>
+                <strong>head</strong
+                >：像是大腦，放的是設定、標題、關鍵字、引用的 CSS、JS
+                等，看不到但很重要。
+              </li>
+              <li>
+                <strong>body</strong
+                >：像是身體，放的是文字、圖片、按鈕、表格等等，使用者實際看到的東西。
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="qa">
+          <div class="q">
+            Q4：一個網頁可以有兩個 <code>&lt;body&gt;</code> 嗎？
+          </div>
+          <div class="a">
+            不行，標準的 HTML 文件結構中：
+            <ul>
+              <li><code>&lt;html&gt;</code> 只能有一個</li>
+              <li><code>&lt;head&gt;</code> 只能有一個</li>
+              <li><code>&lt;body&gt;</code> 也只能有一個</li>
+            </ul>
+            如果寫了兩個
+            <code>&lt;body&gt;</code
+            >，瀏覽器有時候會「幫你自動修正」，但那不是正確寫法，考試或作業會被扣分喔。
+          </div>
+        </section>
+      </main>
+
+      <footer>Lucky_Jan 的 HTML 學習園地 · HTML 基本架構解說</footer>
+    </div>
+  </body>
+</html>
