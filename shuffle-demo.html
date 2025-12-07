@@ -2,21 +2,24 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <title>打散遊戲｜Shuffle Demo</title>
+  <title>Shuffle Demo｜超級瑪利找最大值遊戲</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <style>
     :root {
-      --bg: #f4f5fb;
-      --card-bg: #ffffff;
-      --accent: #4c6fff;
-      --accent-soft: #e3e7ff;
+      --sky: #7ed6ff;
+      --sky-top: #a5e0ff;
+      --card-bg: #ffe07a;
+      --card-edge: #c49a2c;
+      --card-face: #fff4c2;
       --text-main: #1f2933;
-      --text-sub: #6b7280;
-      --border-soft: #e5e7eb;
-      --shadow-soft: 0 12px 25px rgba(15, 23, 42, 0.08);
-      --radius-lg: 18px;
-      --radius-full: 999px;
+      --text-sub: #4b5563;
+      --accent: #ff6b6b;
+      --accent-2: #4c6fff;
+      --ground-top: #f6c67a;
+      --ground-bottom: #b87722;
+      --radius-lg: 22px;
+      --radius-card: 18px;
+      --shadow-soft: 0 12px 24px rgba(15, 23, 42, 0.35);
     }
 
     * {
@@ -28,368 +31,475 @@
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
         sans-serif, "Microsoft JhengHei";
-      background: radial-gradient(circle at top, #eef0ff 0, #f9fafb 50%, #f4f5fb 100%);
-      color: var(--text-main);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px 16px;
+      padding: 20px 12px;
+      background:
+        linear-gradient(to bottom, var(--sky-top) 0, var(--sky) 60%, #fef3c7 60%, #fef3c7 100%);
+      color: var(--text-main);
     }
 
-    .wrapper {
+    /* 遊戲外框：避免你說的那種「怪半圓」問題，這邊邊角跟底色都對齊 */
+    .game-shell {
       width: 100%;
-      max-width: 640px;
-      background: rgba(255, 255, 255, 0.96);
+      max-width: 980px;
+      background: #f9fafb;
       border-radius: 28px;
-      box-shadow: 0 24px 50px rgba(15, 23, 42, 0.18);
-      padding: 22px 18px 18px;
-      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden; /* 上下圓角切乾淨，不會露出怪東西 */
+      position: relative;
     }
 
-    header {
+    .game-inner {
+      padding: 20px 20px 16px;
+    }
+
+    /* 上方 header 區 */
+    .header {
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
-      align-items: center;
       gap: 12px;
-      margin-bottom: 14px;
-      border-bottom: 1px solid var(--border-soft);
+      margin-bottom: 18px;
+      border-bottom: 1px solid #e5e7eb;
       padding-bottom: 10px;
     }
 
     .title-area {
       display: flex;
-      flex-direction: column;
-      gap: 4px;
+      align-items: center;
+      gap: 12px;
     }
 
-    h1 {
+    .avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      background:
+        linear-gradient(135deg, #ffdd55, #ff9f1c);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1f2933;
+      font-weight: 800;
+      font-size: 22px;
+      box-shadow: 0 10px 18px rgba(217, 119, 6, 0.55);
+    }
+
+    .title-text h1 {
       font-size: 20px;
       letter-spacing: 0.03em;
+      margin-bottom: 4px;
     }
 
-    .subtitle {
+    .title-text p {
       font-size: 13px;
       color: var(--text-sub);
     }
 
-    .back-link {
+    .tag-chip {
+      align-self: center;
       font-size: 12px;
-      text-decoration: none;
-      color: var(--accent);
-      background: var(--accent-soft);
-      padding: 4px 10px;
-      border-radius: var(--radius-full);
+      color: var(--accent-2);
+      background: #e0ebff;
+      border-radius: 999px;
+      padding: 6px 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       white-space: nowrap;
     }
 
-    .info-card {
-      background: var(--card-bg);
-      border-radius: var(--radius-lg);
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      box-shadow: var(--shadow-soft);
-      padding: 12px 14px;
-      font-size: 13px;
-      color: var(--text-sub);
-      line-height: 1.5;
-      margin-bottom: 12px;
+    .tag-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent-2);
     }
 
-    .info-card strong {
-      color: var(--text-main);
-    }
-
-    .row {
-      margin-top: 6px;
-      font-family: "SFMono-Regular", ui-monospace, Menlo, Monaco, Consolas,
-        "Liberation Mono", "Courier New", monospace;
-      font-size: 13px;
-      color: #4b5563;
-    }
-
-    .controls {
+    /* 說明 + 按鈕列 */
+    .controls-row {
       display: flex;
       flex-wrap: wrap;
+      gap: 12px;
       align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .instructions {
+      font-size: 13px;
+      color: var(--text-sub);
+      max-width: 520px;
+      line-height: 1.5;
+    }
+
+    .btn-row {
+      display: flex;
       gap: 8px;
-      margin: 6px 0 10px;
+      flex-wrap: wrap;
     }
 
     .btn {
       border: none;
-      border-radius: var(--radius-full);
-      padding: 7px 14px;
+      border-radius: 999px;
+      padding: 8px 16px;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
-      background: linear-gradient(135deg, #4c6fff, #7f5dff);
-      color: #fff;
-      box-shadow: 0 8px 16px rgba(79, 70, 229, 0.45);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 8px 14px rgba(15, 23, 42, 0.35);
       transition: transform 0.12s ease-out, box-shadow 0.12s ease-out,
         filter 0.12s ease-out;
+      white-space: nowrap;
     }
 
-    .btn.secondary {
-      background: transparent;
-      color: var(--accent);
-      box-shadow: none;
-      border: 1px solid var(--accent-soft);
+    .btn-main {
+      background: linear-gradient(135deg, #ff9f1c, #ff6b6b);
+      color: #fff;
+    }
+
+    .btn-ghost {
+      background: #ffffff;
+      color: #374151;
     }
 
     .btn:hover {
       transform: translateY(-1px);
-      box-shadow: 0 12px 22px rgba(79, 70, 229, 0.55);
-      filter: brightness(1.02);
+      filter: brightness(1.03);
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.4);
     }
 
-    .btn.secondary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 10px rgba(148, 163, 184, 0.35);
-      filter: none;
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 8px rgba(15, 23, 42, 0.35);
     }
 
-    .status {
-      font-size: 12px;
-      color: var(--text-sub);
-    }
-
-    .status strong {
-      color: var(--accent);
-    }
-
-    .board {
-      margin-top: 12px;
+    /* 卡片區：像一排瑪利歐問號磚塊 */
+    .cards-row {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
+      gap: 14px;
+      margin-bottom: 10px;
     }
 
-    .tile {
-      background: #eef0ff;
-      border-radius: 999px;
-      height: 64px;
+    @media (min-width: 720px) {
+      .cards-row {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+    }
+
+    .card {
+      position: relative;
+      height: 150px;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
-      font-weight: 700;
-      color: #4b5563;
-      cursor: pointer;
-      box-shadow: 0 6px 12px rgba(148, 163, 184, 0.5);
-      border: 1px solid #d1d5db;
-      transition: transform 0.1s ease-out, box-shadow 0.1s ease-out,
-        background 0.1s ease-out, border 0.1s ease-out;
-      user-select: none;
+      text-align: center;
+      border-radius: var(--radius-card);
+      background:
+        linear-gradient(to bottom, #ffe9a3, var(--card-bg));
+      box-shadow: 0 8px 0 #b7791f, 0 12px 18px rgba(15, 23, 42, 0.4);
+      border: 2px solid var(--card-edge);
+      transition: transform 0.12s ease-out, box-shadow 0.12s ease-out,
+        border-color 0.12s ease-out, background 0.12s ease-out;
+      overflow: hidden;
     }
 
-    .tile:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 9px 18px rgba(148, 163, 184, 0.8);
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 6px;
+      border-radius: 14px;
+      background: radial-gradient(circle at 30% 20%, #fffbe3, var(--card-face));
+      border: 2px solid rgba(248, 191, 63, 0.6);
     }
 
-    .tile.correct {
-      background: #bbf7d0;
-      border-color: #4ade80;
-      color: #166534;
-      box-shadow: 0 6px 14px rgba(34, 197, 94, 0.6);
-      cursor: default;
+    .card-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
     }
 
-    .tile.wrong {
-      background: #fee2e2;
-      border-color: #ef4444;
-      color: #b91c1c;
-      animation: shake 0.25s;
+    .card-label {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #6b7280;
     }
 
-    .tile.disabled {
-      pointer-events: none;
-      opacity: 0.8;
+    .card-number {
+      font-size: 32px;
+      font-weight: 800;
+      text-shadow: 0 3px 0 #b7791f;
     }
 
-    @keyframes shake {
-      0% { transform: translateX(0); }
-      25% { transform: translateX(-4px); }
-      50% { transform: translateX(4px); }
-      75% { transform: translateX(-2px); }
-      100% { transform: translateX(0); }
-    }
-
-    .result {
-      margin-top: 10px;
-      font-size: 13px;
-      color: var(--text-sub);
-      min-height: 1.2em;
-    }
-
-    .result.success {
-      color: #16a34a;
-      font-weight: 600;
-    }
-
-    .result.fail {
-      color: #dc2626;
-      font-weight: 600;
-    }
-
-    footer {
-      margin-top: 12px;
+    .card-slot {
       font-size: 11px;
       color: #9ca3af;
-      text-align: right;
     }
 
-    @media (max-width: 480px) {
-      body {
-        padding: 16px 10px;
-      }
-      .wrapper {
-        border-radius: 20px;
-        padding: 18px 12px 14px;
-      }
-      .tile {
-        height: 56px;
-        font-size: 20px;
-      }
+    .card.selected {
+      transform: translateY(-4px);
+      border-color: #3b82f6;
+      box-shadow: 0 10px 0 #1d4ed8, 0 16px 24px rgba(37, 99, 235, 0.55);
+    }
+
+    .card.correct {
+      border-color: #16a34a;
+      box-shadow: 0 10px 0 #15803d, 0 16px 24px rgba(22, 163, 74, 0.55);
+    }
+
+    .card.wrong.selected {
+      border-color: #dc2626;
+      box-shadow: 0 10px 0 #b91c1c, 0 16px 24px rgba(239, 68, 68, 0.55);
+    }
+
+    .card.disabled {
+      cursor: default;
+      opacity: 0.85;
+    }
+
+    /* 結果訊息列 */
+    .result-bar {
+      margin-top: 4px;
+      padding: 10px 12px 12px;
+      border-radius: 16px;
+      background: #eef2ff;
+      border: 1px dashed #c7d2fe;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 13px;
+      color: #1e293b;
+    }
+
+    .result-main {
+      font-weight: 600;
+    }
+
+    .result-sub {
+      font-size: 12px;
+      color: #4b5563;
+    }
+
+    /* 地板：瑪利歐地面風格，整條跟外框齊 */
+    .ground {
+      width: 100%;
+      height: 32px;
+      background: linear-gradient(to bottom, var(--ground-top), var(--ground-bottom));
+      border-radius: 0 0 28px 28px;
+      box-shadow: inset 0 6px 0 rgba(255, 255, 255, 0.2);
     }
   </style>
 </head>
 <body>
-  <div class="wrapper">
-    <header>
-      <div class="title-area">
-        <h1>打散前與打散後 · 小遊戲</h1>
-        <p class="subtitle">使用 Fisher–Yates 洗牌，練習「亂數打散」與觀察順序。</p>
-      </div>
-      <a class="back-link" href="index.html">← 返回 10 宮格首頁</a>
-    </header>
+  <div class="game-shell">
+    <div class="game-inner">
+      <header class="header">
+        <div class="title-area">
+          <div class="avatar">LJ</div>
+          <div class="title-text">
+            <h1>超級瑪利 · 找最大值撲克牌</h1>
+            <p>點「洗牌」打亂數字，選一張你覺得最大的，再檢查答案。</p>
+          </div>
+        </div>
+        <div class="tag-chip">
+          <span class="tag-dot"></span>
+          <span>JavaScript 數字比較練習</span>
+        </div>
+      </header>
 
-    <section class="info-card">
-      <p>
-        遊戲說明：<br>
-        1. 原始順序為：<strong>1 2 3 4 5 6</strong><br>
-        2. 按下「開始洗牌遊戲」後，系統會用 <strong>Fisher–Yates 洗牌演算法</strong> 打散。<br>
-        3. 請依照 <strong>由小到大（1 → 2 → 3 → 4 → 5 → 6）</strong> 的順序點擊圓形卡片。<br>
-        4. 點錯會提示，再試一次，看你能用幾秒完成！
-      </p>
-      <p class="row" id="before-row">打散前：1 2 3 4 5 6</p>
-      <p class="row" id="after-row">打散後：尚未洗牌</p>
-    </section>
+      <section class="controls-row">
+        <p class="instructions">
+          遊戲流程：<br>
+          ① 按「🎲 洗牌」產生 6 個 1～99 的隨機數字。<br>
+          ② 點一張牌，選你覺得「最大值」那張。<br>
+          ③ 按「✅ 檢查最大值」，系統會標出真正最大值並判斷你有沒有選對。
+        </p>
+        <div class="btn-row">
+          <button id="btn-shuffle" class="btn btn-main">🎲 洗牌</button>
+          <button id="btn-check" class="btn btn-ghost">✅ 檢查最大值</button>
+        </div>
+      </section>
 
-    <section class="controls">
-      <button class="btn" id="start-btn">開始洗牌遊戲</button>
-      <button class="btn secondary" id="reshuffle-btn" disabled>重新洗牌</button>
-      <span class="status" id="status-text">
-        目前目標：<strong>尚未開始</strong>
-      </span>
-    </section>
+      <section class="cards-row" id="cards-row">
+        <!-- 6 張牌，文字對齊、寬高一致 -->
+        <div class="card" data-index="0">
+          <div class="card-content">
+            <div class="card-label">CARD</div>
+            <div class="card-number">?</div>
+            <div class="card-slot">位置 1</div>
+          </div>
+        </div>
+        <div class="card" data-index="1">
+          <div class="card-content">
+            <div class="card-label">CARD</div>
+            <div class="card-number">?</div>
+            <div class="card-slot">位置 2</div>
+          </div>
+        </div>
+        <div class="card" data-index="2">
+          <div class="card-content">
+            <div class="card-label">CARD</div>
+            <div class="card-number">?</div>
+            <div class="card-slot">位置 3</div>
+          </div>
+        </div>
+        <div class="card" data-index="3">
+          <div class="card-content">
+            <div class="card-label">CARD</div>
+            <div class="card-number">?</div>
+            <div class="card-slot">位置 4</div>
+          </div>
+        </div>
+        <div class="card" data-index="4">
+          <div class="card-content">
+            <div class="card-label">CARD</div>
+            <div class="card-number">?</div>
+            <div class="card-slot">位置 5</div>
+          </div>
+        </div>
+        <div class="card" data-index="5">
+          <div class="card-content">
+            <div class="card-label">CARD</div>
+            <div class="card-number">?</div>
+            <div class="card-slot">位置 6</div>
+          </div>
+        </div>
+      </section>
 
-    <section class="board" id="board">
-      <!-- 卡片會用 JavaScript 產生 -->
-    </section>
+      <section class="result-bar">
+        <div class="result-main" id="result-main">
+          ➤ 請先按「🎲 洗牌」開始遊戲。
+        </div>
+        <div class="result-sub" id="result-sub">
+          最大值與正確位置會顯示在這裡。
+        </div>
+      </section>
+    </div>
 
-    <p class="result" id="result-text"></p>
-
-    <footer>
-      Lucky_JAN 的學習園地 · Shuffle Demo Game
-    </footer>
+    <!-- 底部地板 -->
+    <div class="ground"></div>
   </div>
 
   <script>
-    const board = document.getElementById("board");
-    const startBtn = document.getElementById("start-btn");
-    const reshuffleBtn = document.getElementById("reshuffle-btn");
-    const statusText = document.getElementById("status-text");
-    const beforeRow = document.getElementById("before-row");
-    const afterRow = document.getElementById("after-row");
-    const resultText = document.getElementById("result-text");
+    const cards = Array.from(document.querySelectorAll(".card"));
+    const btnShuffle = document.getElementById("btn-shuffle");
+    const btnCheck = document.getElementById("btn-check");
+    const resultMain = document.getElementById("result-main");
+    const resultSub = document.getElementById("result-sub");
 
-    let original = [1, 2, 3, 4, 5, 6];
-    let shuffled = [];
-    let currentTarget = 1;
-    let startTime = null;
-    let finished = false;
+    let values = [];         // 每張牌上的數字
+    let selectedIndex = null; // 玩家選的那張 index
+    let gameReady = false;    // 是否已經洗牌
 
-    // 初始化顯示「打散前」
-    beforeRow.textContent = "打散前：" + original.join(" ");
-
-    function fisherYatesShuffle(arr) {
-      let a = arr.slice(); // 複製一份，避免改到原本
-      for (let i = a.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
+    // 產生 6 個 1~99 的隨機不重複數字
+    function generateNumbers() {
+      values = [];
+      while (values.length < 6) {
+        const n = Math.floor(Math.random() * 99) + 1; // 1~99
+        if (!values.includes(n)) {
+          values.push(n);
+        }
       }
-      return a;
     }
 
-    function renderBoard() {
-      board.innerHTML = "";
-      shuffled.forEach(function (num) {
-        const tile = document.createElement("div");
-        tile.className = "tile";
-        tile.textContent = num;
-
-        tile.addEventListener("click", function () {
-          if (finished) return;
-
-          const value = num;
-
-          if (value === currentTarget) {
-            tile.classList.add("correct", "disabled");
-            currentTarget++;
-
-            if (currentTarget <= 6) {
-              statusText.innerHTML =
-                '目前目標：<strong>' + currentTarget + '</strong>';
-            } else {
-              // 最後一個（6）也點對了
-              finished = true;
-              const endTime = Date.now();
-              const timeUsed = ((endTime - startTime) / 1000).toFixed(2);
-              statusText.innerHTML = '目前目標：<strong>完成！</strong>';
-              resultText.textContent = "太讚了！你用了 " + timeUsed + " 秒完成正確順序。";
-              resultText.className = "result success";
-            }
-          } else {
-            // 點錯
-            tile.classList.add("wrong");
-            setTimeout(function () {
-              tile.classList.remove("wrong");
-            }, 250);
-            resultText.textContent = "順序不對喔！請從 " + currentTarget + " 開始找。";
-            resultText.className = "result fail";
-          }
-        });
-
-        board.appendChild(tile);
+    function renderCards() {
+      cards.forEach((card, idx) => {
+        const numEl = card.querySelector(".card-number");
+        numEl.textContent = values[idx];
+        card.classList.remove("selected", "correct", "wrong", "disabled");
       });
     }
 
-    function startGame() {
-      // 產生新的隨機排列
-      shuffled = fisherYatesShuffle(original);
-      afterRow.textContent = "打散後：" + shuffled.join(" ");
-      currentTarget = 1;
-      finished = false;
-      resultText.textContent = "";
-      resultText.className = "result";
-      statusText.innerHTML = '目前目標：<strong>1</strong>';
-      startTime = Date.now();
-
-      renderBoard();
-
-      reshuffleBtn.disabled = false;
+    function resetSelection() {
+      selectedIndex = null;
+      cards.forEach(card => {
+        card.classList.remove("selected", "correct", "wrong");
+      });
     }
 
-    startBtn.addEventListener("click", startGame);
-
-    reshuffleBtn.addEventListener("click", function () {
-      startGame();
+    // 洗牌按鈕
+    btnShuffle.addEventListener("click", () => {
+      generateNumbers();
+      renderCards();
+      resetSelection();
+      gameReady = true;
+      resultMain.textContent = "請點選一張你覺得最大的牌。";
+      resultSub.textContent = "提示：共有 6 張牌，數字範圍為 1～99。";
     });
 
-    // 預設一開始顯示空盤（沒有開始遊戲）
-    shuffled = [];
-    renderBoard();
+    // 點牌選擇最大值
+    cards.forEach(card => {
+      card.addEventListener("click", () => {
+        if (!gameReady) return;
+        resetSelection();
+        const idx = Number(card.dataset.index);
+        selectedIndex = idx;
+        card.classList.add("selected");
+        resultMain.textContent = `你目前選的是第 ${idx + 1} 張牌（數字：${values[idx]}）。`;
+        resultSub.textContent = "如果確定，按「✅ 檢查最大值」。";
+      });
+    });
+
+    // 檢查最大值
+    btnCheck.addEventListener("click", () => {
+      if (!gameReady) {
+        resultMain.textContent = "還沒洗牌啦！先按「🎲 洗牌」。";
+        resultSub.textContent = "系統需要先產生 6 個隨機數字。";
+        return;
+      }
+      if (selectedIndex === null) {
+        resultMain.textContent = "請先點一張牌，選出你覺得最大的數字。";
+        resultSub.textContent = "點擊任一張卡片就可以選擇。";
+        return;
+      }
+
+      // 找出最大值與位置
+      let maxValue = values[0];
+      let maxIndex = 0;
+      for (let i = 1; i < values.length; i++) {
+        if (values[i] > maxValue) {
+          maxValue = values[i];
+          maxIndex = i;
+        }
+      }
+
+      // 先清除狀態
+      cards.forEach(card => {
+        card.classList.remove("correct", "wrong");
+        card.classList.add("disabled");
+      });
+
+      // 標記最大值那張
+      cards[maxIndex].classList.add("correct");
+      // 玩家選錯才加 wrong 標記
+      if (selectedIndex !== maxIndex) {
+        cards[selectedIndex].classList.add("wrong");
+      }
+
+      // 顯示結果
+      if (selectedIndex === maxIndex) {
+        resultMain.textContent = `✔ 恭喜！你選對了，最大值是 ${maxValue}。`;
+        resultSub.textContent = `最大值在第 ${maxIndex + 1} 張牌。再按一次「🎲 洗牌」可以重新玩一局。`;
+      } else {
+        resultMain.textContent = `✖ 沒關係～真正最大值是 ${maxValue}。`;
+        resultSub.textContent = `最大值在第 ${maxIndex + 1} 張牌，你選的是第 ${selectedIndex + 1} 張（${values[selectedIndex]}）。再試一次吧！`;
+      }
+
+      gameReady = false; // 避免重複檢查，必須重新洗牌
+    });
   </script>
 </body>
 </html>
