@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>打散遊戲｜Shuffle Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    :root {
+      --bg: #f4f5fb;
+      --card-bg: #ffffff;
+      --accent: #4c6fff;
+      --accent-soft: #e3e7ff;
+      --text-main: #1f2933;
+      --text-sub: #6b7280;
+      --border-soft: #e5e7eb;
+      --shadow-soft: 0 12px 25px rgba(15, 23, 42, 0.08);
+      --radius-lg: 18px;
+      --radius-full: 999px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif, "Microsoft JhengHei";
+      background: radial-gradient(circle at top, #eef0ff 0, #f9fafb 50%, #f4f5fb 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 640px;
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 28px;
+      box-shadow: 0 24px 50px rgba(15, 23, 42, 0.18);
+      padding: 22px 18px 18px;
+      backdrop-filter: blur(18px);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--border-soft);
+      padding-bottom: 10px;
+    }
+
+    .title-area {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    h1 {
+      font-size: 20px;
+      letter-spacing: 0.03em;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    .back-link {
+      font-size: 12px;
+      text-decoration: none;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      white-space: nowrap;
+    }
+
+    .info-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow: var(--shadow-soft);
+      padding: 12px 14px;
+      font-size: 13px;
+      color: var(--text-sub);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .info-card strong {
+      color: var(--text-main);
+    }
+
+    .row {
+      margin-top: 6px;
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Monaco, Consolas,
+        "Liberation Mono", "Courier New", monospace;
+      font-size: 13px;
+      color: #4b5563;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin: 6px 0 10px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: var(--radius-full);
+      padding: 7px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(135deg, #4c6fff, #7f5dff);
+      color: #fff;
+      box-shadow: 0 8px 16px rgba(79, 70, 229, 0.45);
+      transition: transform 0.12s ease-out, box-shadow 0.12s ease-out,
+        filter 0.12s ease-out;
+    }
+
+    .btn.secondary {
+      background: transparent;
+      color: var(--accent);
+      box-shadow: none;
+      border: 1px solid var(--accent-soft);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 22px rgba(79, 70, 229, 0.55);
+      filter: brightness(1.02);
+    }
+
+    .btn.secondary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 10px rgba(148, 163, 184, 0.35);
+      filter: none;
+    }
+
+    .status {
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+
+    .status strong {
+      color: var(--accent);
+    }
+
+    .board {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .tile {
+      background: #eef0ff;
+      border-radius: 999px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 700;
+      color: #4b5563;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(148, 163, 184, 0.5);
+      border: 1px solid #d1d5db;
+      transition: transform 0.1s ease-out, box-shadow 0.1s ease-out,
+        background 0.1s ease-out, border 0.1s ease-out;
+      user-select: none;
+    }
+
+    .tile:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 9px 18px rgba(148, 163, 184, 0.8);
+    }
+
+    .tile.correct {
+      background: #bbf7d0;
+      border-color: #4ade80;
+      color: #166534;
+      box-shadow: 0 6px 14px rgba(34, 197, 94, 0.6);
+      cursor: default;
+    }
+
+    .tile.wrong {
+      background: #fee2e2;
+      border-color: #ef4444;
+      color: #b91c1c;
+      animation: shake 0.25s;
+    }
+
+    .tile.disabled {
+      pointer-events: none;
+      opacity: 0.8;
+    }
+
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      50% { transform: translateX(4px); }
+      75% { transform: translateX(-2px); }
+      100% { transform: translateX(0); }
+    }
+
+    .result {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--text-sub);
+      min-height: 1.2em;
+    }
+
+    .result.success {
+      color: #16a34a;
+      font-weight: 600;
+    }
+
+    .result.fail {
+      color: #dc2626;
+      font-weight: 600;
+    }
+
+    footer {
+      margin-top: 12px;
+      font-size: 11px;
+      color: #9ca3af;
+      text-align: right;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 16px 10px;
+      }
+      .wrapper {
+        border-radius: 20px;
+        padding: 18px 12px 14px;
+      }
+      .tile {
+        height: 56px;
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <header>
+      <div class="title-area">
+        <h1>打散前與打散後 · 小遊戲</h1>
+        <p class="subtitle">使用 Fisher–Yates 洗牌，練習「亂數打散」與觀察順序。</p>
+      </div>
+      <a class="back-link" href="index.html">← 返回 10 宮格首頁</a>
+    </header>
+
+    <section class="info-card">
+      <p>
+        遊戲說明：<br>
+        1. 原始順序為：<strong>1 2 3 4 5 6</strong><br>
+        2. 按下「開始洗牌遊戲」後，系統會用 <strong>Fisher–Yates 洗牌演算法</strong> 打散。<br>
+        3. 請依照 <strong>由小到大（1 → 2 → 3 → 4 → 5 → 6）</strong> 的順序點擊圓形卡片。<br>
+        4. 點錯會提示，再試一次，看你能用幾秒完成！
+      </p>
+      <p class="row" id="before-row">打散前：1 2 3 4 5 6</p>
+      <p class="row" id="after-row">打散後：尚未洗牌</p>
+    </section>
+
+    <section class="controls">
+      <button class="btn" id="start-btn">開始洗牌遊戲</button>
+      <button class="btn secondary" id="reshuffle-btn" disabled>重新洗牌</button>
+      <span class="status" id="status-text">
+        目前目標：<strong>尚未開始</strong>
+      </span>
+    </section>
+
+    <section class="board" id="board">
+      <!-- 卡片會用 JavaScript 產生 -->
+    </section>
+
+    <p class="result" id="result-text"></p>
+
+    <footer>
+      Lucky_JAN 的學習園地 · Shuffle Demo Game
+    </footer>
+  </div>
+
+  <script>
+    const board = document.getElementById("board");
+    const startBtn = document.getElementById("start-btn");
+    const reshuffleBtn = document.getElementById("reshuffle-btn");
+    const statusText = document.getElementById("status-text");
+    const beforeRow = document.getElementById("before-row");
+    const afterRow = document.getElementById("after-row");
+    const resultText = document.getElementById("result-text");
+
+    let original = [1, 2, 3, 4, 5, 6];
+    let shuffled = [];
+    let currentTarget = 1;
+    let startTime = null;
+    let finished = false;
+
+    // 初始化顯示「打散前」
+    beforeRow.textContent = "打散前：" + original.join(" ");
+
+    function fisherYatesShuffle(arr) {
+      let a = arr.slice(); // 複製一份，避免改到原本
+      for (let i = a.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function renderBoard() {
+      board.innerHTML = "";
+      shuffled.forEach(function (num) {
+        const tile = document.createElement("div");
+        tile.className = "tile";
+        tile.textContent = num;
+
+        tile.addEventListener("click", function () {
+          if (finished) return;
+
+          const value = num;
+
+          if (value === currentTarget) {
+            tile.classList.add("correct", "disabled");
+            currentTarget++;
+
+            if (currentTarget <= 6) {
+              statusText.innerHTML =
+                '目前目標：<strong>' + currentTarget + '</strong>';
+            } else {
+              // 最後一個（6）也點對了
+              finished = true;
+              const endTime = Date.now();
+              const timeUsed = ((endTime - startTime) / 1000).toFixed(2);
+              statusText.innerHTML = '目前目標：<strong>完成！</strong>';
+              resultText.textContent = "太讚了！你用了 " + timeUsed + " 秒完成正確順序。";
+              resultText.className = "result success";
+            }
+          } else {
+            // 點錯
+            tile.classList.add("wrong");
+            setTimeout(function () {
+              tile.classList.remove("wrong");
+            }, 250);
+            resultText.textContent = "順序不對喔！請從 " + currentTarget + " 開始找。";
+            resultText.className = "result fail";
+          }
+        });
+
+        board.appendChild(tile);
+      });
+    }
+
+    function startGame() {
+      // 產生新的隨機排列
+      shuffled = fisherYatesShuffle(original);
+      afterRow.textContent = "打散後：" + shuffled.join(" ");
+      currentTarget = 1;
+      finished = false;
+      resultText.textContent = "";
+      resultText.className = "result";
+      statusText.innerHTML = '目前目標：<strong>1</strong>';
+      startTime = Date.now();
+
+      renderBoard();
+
+      reshuffleBtn.disabled = false;
+    }
+
+    startBtn.addEventListener("click", startGame);
+
+    reshuffleBtn.addEventListener("click", function () {
+      startGame();
+    });
+
+    // 預設一開始顯示空盤（沒有開始遊戲）
+    shuffled = [];
+    renderBoard();
+  </script>
+</body>
+</html>
