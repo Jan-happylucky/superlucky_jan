@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>🎯 終極密碼</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    body {
+        font-family: "Segoe UI", sans-serif;
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .game {
+        background: rgba(0,0,0,0.3);
+        padding: 25px;
+        border-radius: 16px;
+        width: 320px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    h1 {
+        margin-top: 0;
+    }
+
+    input {
+        width: 80%;
+        padding: 10px;
+        font-size: 18px;
+        border-radius: 8px;
+        border: none;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    button {
+        width: 45%;
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        margin: 5px;
+    }
+
+    .guess {
+        background: #4caf50;
+        color: white;
+    }
+
+    .reset {
+        background: #f44336;
+        color: white;
+    }
+
+    .info {
+        margin-top: 15px;
+        font-size: 16px;
+    }
+
+    .range {
+        font-weight: bold;
+        margin: 10px 0;
+    }
+</style>
+</head>
+<body>
+
+<div class="game">
+    <h1>🎯 終極密碼</h1>
+    <div class="range">範圍：<span id="min">1</span> ～ <span id="max">100</span></div>
+
+    <input type="number" id="input" placeholder="輸入數字">
+
+    <div>
+        <button class="guess" onclick="check()">猜！</button>
+        <button class="reset" onclick="resetGame()">重來</button>
+    </div>
+
+    <div class="info" id="msg">開始猜吧 😎</div>
+    <div class="info">猜測次數：<span id="count">0</span></div>
+</div>
+
+<script>
+let answer, min, max, count;
+
+function resetGame() {
+    min = 1;
+    max = 100;
+    answer = Math.floor(Math.random() * 100) + 1;
+    count = 0;
+    document.getElementById("min").textContent = min;
+    document.getElementById("max").textContent = max;
+    document.getElementById("count").textContent = count;
+    document.getElementById("msg").textContent = "開始猜吧 😎";
+    document.getElementById("input").value = "";
+}
+
+function check() {
+    const input = document.getElementById("input");
+    const num = Number(input.value);
+
+    if (!num || num <= min || num >= max) {
+        document.getElementById("msg").textContent = "⚠️ 請輸入範圍內的數字";
+        return;
+    }
+
+    count++;
+    document.getElementById("count").textContent = count;
+
+    if (num === answer) {
+        document.getElementById("msg").textContent = `🎉 猜中了！答案是 ${answer}`;
+    } else if (num < answer) {
+        min = num;
+        document.getElementById("msg").textContent = "🔼 太小了";
+    } else {
+        max = num;
+        document.getElementById("msg").textContent = "🔽 太大了";
+    }
+
+    document.getElementById("min").textContent = min;
+    document.getElementById("max").textContent = max;
+    input.value = "";
+}
+
+resetGame();
+</script>
+
+</body>
+</html>
+
