@@ -2,136 +2,255 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<title>🎯 終極密碼</title>
+<title>🎀 終極密碼</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-    body {
-        font-family: "Segoe UI", sans-serif;
-        background: linear-gradient(135deg, #1e3c72, #2a5298);
-        color: white;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-    }
+:root {
+  --bg1:#ffd1dc;
+  --bg2:#ffe6f0;
+  --card:#fff0f6;
+  --main:#ff69b4;
+  --sub:#ffb6c1;
+  --text:#d63384;
+}
 
-    .game {
-        background: rgba(0,0,0,0.3);
-        padding: 25px;
-        border-radius: 16px;
-        width: 320px;
-        text-align: center;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-    }
+body{
+  font-family:"Segoe UI",sans-serif;
+  background:linear-gradient(135deg,var(--bg1),var(--bg2));
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  margin:0;
+  overflow:hidden;
+}
 
-    h1 {
-        margin-top: 0;
-    }
+.game{
+  background:var(--card);
+  padding:28px;
+  border-radius:26px;
+  width:320px;
+  text-align:center;
+  box-shadow:0 18px 40px rgba(255,182,193,.6);
+  border:3px solid var(--sub);
+  position:relative;
+}
 
-    input {
-        width: 80%;
-        padding: 10px;
-        font-size: 18px;
-        border-radius: 8px;
-        border: none;
-        text-align: center;
-        margin-bottom: 10px;
-    }
+h1{color:var(--main);margin-top:0;}
+.range{color:var(--main);font-weight:bold;margin-bottom:10px;}
 
-    button {
-        width: 45%;
-        padding: 10px;
-        font-size: 16px;
-        border-radius: 8px;
-        border: none;
-        cursor: pointer;
-        margin: 5px;
-    }
+input{
+  width:85%;
+  padding:12px;
+  font-size:18px;
+  border-radius:16px;
+  border:2px solid var(--sub);
+  text-align:center;
+  outline:none;
+}
 
-    .guess {
-        background: #4caf50;
-        color: white;
-    }
+input:focus{
+  border-color:var(--main);
+  box-shadow:0 0 8px var(--sub);
+}
 
-    .reset {
-        background: #f44336;
-        color: white;
-    }
+button{
+  padding:12px;
+  font-size:14px;
+  border-radius:18px;
+  border:none;
+  cursor:pointer;
+  margin:8px 4px;
+  font-weight:bold;
+  transition:.2s;
+}
+button:hover{transform:scale(1.08);}
 
-    .info {
-        margin-top: 15px;
-        font-size: 16px;
-    }
+.row{
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
 
-    .range {
-        font-weight: bold;
-        margin: 10px 0;
-    }
+.row.main button{width:45%;}
+.row.tools button{width:30%; font-size:13px;}
+.row.tools button.hint{
+  background:linear-gradient(135deg,#ffe6f0,#ffd1dc);
+  color:#b03060;
+}
+
+.guess{
+  background:linear-gradient(135deg,#ff9a9e,#fad0c4);
+  color:#7a003c;
+}
+.reset{
+  background:linear-gradient(135deg,#fbc2eb,#a6c1ee);
+  color:#4b0082;
+}
+
+.info{
+  margin-top:10px;
+  color:var(--text);
+  font-size:16px;
+}
+
+/* 🎉 灑花 */
+.confetti{
+  position:absolute;
+  width:10px;
+  height:10px;
+  animation:fall 2s linear forwards;
+}
+@keyframes fall{
+  to{transform:translateY(420px) rotate(360deg);opacity:0;}
+}
 </style>
 </head>
+
 <body>
 
 <div class="game">
-    <h1>🎯 終極密碼</h1>
-    <div class="range">範圍：<span id="min">1</span> ～ <span id="max">100</span></div>
+  <h1>🎀 終極密碼</h1>
 
-    <input type="number" id="input" placeholder="輸入數字">
+  <div class="range">
+    範圍：<span id="min">1</span> ～ <span id="max">100</span>
+  </div>
 
-    <div>
-        <button class="guess" onclick="check()">猜！</button>
-        <button class="reset" onclick="resetGame()">重來</button>
-    </div>
+  <input type="number" id="input" placeholder="輸入數字 💗">
 
-    <div class="info" id="msg">開始猜吧 😎</div>
-    <div class="info">猜測次數：<span id="count">0</span></div>
+  <div class="row main">
+    <button class="guess" onclick="check()">猜一下 🎯</button>
+    <button class="reset" onclick="resetGame()">重來 ♻️</button>
+  </div>
+
+  <div class="row tools">
+    <button onclick="theme('pink')">粉紅 💗</button>
+    <button onclick="theme('purple')">粉紫 💜</button>
+    <button onclick="fullscreen()">全螢幕 📱</button>
+  </div>
+
+  <div class="row tools">
+    <button class="hint" onclick="showHint()">👀 答案提示</button>
+  </div>
+
+  <div class="info" id="msg">快來猜猜看 ✨</div>
+  <div class="info">猜測次數：<span id="count">0</span></div>
 </div>
+
+<!-- 🎵 音效（猜中） -->
+<audio id="winSound" preload="auto">
+  <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_9f5f86f7f0.mp3" type="audio/mpeg">
+</audio>
 
 <script>
 let answer, min, max, count;
+let hinted = false; // ✅ 是否已提示過
 
-function resetGame() {
-    min = 1;
-    max = 100;
-    answer = Math.floor(Math.random() * 100) + 1;
-    count = 0;
-    document.getElementById("min").textContent = min;
-    document.getElementById("max").textContent = max;
-    document.getElementById("count").textContent = count;
-    document.getElementById("msg").textContent = "開始猜吧 😎";
-    document.getElementById("input").value = "";
+const input = document.getElementById("input");
+const msgEl = document.getElementById("msg");
+const minEl = document.getElementById("min");
+const maxEl = document.getElementById("max");
+const countEl = document.getElementById("count");
+
+function msg(t){ msgEl.textContent = t; }
+
+function update(){
+  minEl.textContent = min;
+  maxEl.textContent = max;
+  countEl.textContent = count;
+  input.value = "";
+  input.focus();
 }
 
-function check() {
-    const input = document.getElementById("input");
-    const num = Number(input.value);
+function resetGame(){
+  min = 1;
+  max = 100;
+  answer = Math.floor(Math.random() * 100) + 1;
+  count = 0;
+  hinted = false; // ✅ 重來時可以再提示一次
+  msg("快來猜猜看 ✨");
+  update();
+}
 
-    if (!num || num <= min || num >= max) {
-        document.getElementById("msg").textContent = "⚠️ 請輸入範圍內的數字";
-        return;
-    }
+function check(){
+  const n = Number(input.value);
 
-    count++;
-    document.getElementById("count").textContent = count;
+  if(!n || n <= min || n >= max){
+    msg("⚠️ 要輸入範圍內的數字唷～（不能等於上下限）");
+    return;
+  }
 
-    if (num === answer) {
-        document.getElementById("msg").textContent = `🎉 猜中了！答案是 ${answer}`;
-    } else if (num < answer) {
-        min = num;
-        document.getElementById("msg").textContent = "🔼 太小了";
-    } else {
-        max = num;
-        document.getElementById("msg").textContent = "🔽 太大了";
-    }
+  count++;
 
-    document.getElementById("min").textContent = min;
-    document.getElementById("max").textContent = max;
-    input.value = "";
+  if(n === answer){
+    msg(`🎉 猜中了！答案是 ${answer} 💖`);
+    try{ document.getElementById("winSound").play(); }catch(e){}
+    confetti();
+  }else if(n < answer){
+    min = n;
+    msg("⬆️ 太小了啦～");
+  }else{
+    max = n;
+    msg("⬇️ 太大囉～");
+  }
+
+  update();
+}
+
+function showHint(){
+  if(hinted){
+    msg("😝 已經提示過一次囉～靠自己加油 💪💗");
+    return;
+  }
+  hinted = true;
+  msg(`🤫 偷偷告訴你～答案是 ${answer}`);
+}
+
+function confetti(){
+  for(let i=0;i<45;i++){
+    const c = document.createElement("div");
+    c.className = "confetti";
+    c.style.left = Math.random()*100 + "%";
+    c.style.top = "-10px";
+    c.style.background = ["#ff69b4","#ffc0cb","#dda0dd","#ffd1dc","#fbc2eb"][Math.floor(Math.random()*5)];
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),2000);
+  }
+}
+
+function theme(t){
+  if(t === "purple"){
+    document.documentElement.style.setProperty("--bg1","#e0c3fc");
+    document.documentElement.style.setProperty("--bg2","#fbc2eb");
+    document.documentElement.style.setProperty("--main","#b5179e");
+    document.documentElement.style.setProperty("--sub","#dda0dd");
+    document.documentElement.style.setProperty("--text","#7b2cbf");
+    msg("已切換成粉紫主題 💜");
+  }else{
+    document.documentElement.style.setProperty("--bg1","#ffd1dc");
+    document.documentElement.style.setProperty("--bg2","#ffe6f0");
+    document.documentElement.style.setProperty("--main","#ff69b4");
+    document.documentElement.style.setProperty("--sub","#ffb6c1");
+    document.documentElement.style.setProperty("--text","#d63384");
+    msg("已切換成粉紅主題 💗");
+  }
+}
+
+function fullscreen(){
+  const el = document.documentElement;
+  if(el.requestFullscreen){
+    el.requestFullscreen();
+  }
 }
 
 resetGame();
+
+// ✅ 讓你按 Enter 也能猜
+input.addEventListener("keydown", (e)=>{
+  if(e.key === "Enter") check();
+});
 </script>
 
 </body>
 </html>
-
