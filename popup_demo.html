@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>jQuery Center Popup</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<style>
+  body{
+    font-family: "Segoe UI", sans-serif;
+    background:#f1f5f9;
+    height:100vh;
+    margin:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+  }
+
+  /* 開啟按鈕（本身也置中） */
+  #openBtn{
+    padding:12px 22px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#4f46e5,#6366f1);
+    color:#fff;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    box-shadow:0 10px 25px rgba(79,70,229,.35);
+  }
+
+  /* 遮罩（滿版） */
+  .overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    z-index:999;
+  }
+
+  /* 彈窗（永遠正中間） */
+  .popup{
+    display:none;
+    position:fixed;
+    left:50%;
+    top:50%;
+    transform:translate(-50%, -50%);
+    width:320px;
+    background:#fff;
+    border-radius:18px;
+    padding:24px 20px;
+    text-align:center;
+    z-index:1000;
+    box-shadow:0 25px 60px rgba(0,0,0,.35);
+  }
+
+  .popup h2{
+    margin:0 0 8px;
+    font-size:24px;
+  }
+
+  .popup p{
+    margin:0 0 18px;
+    color:#64748b;
+    font-size:15px;
+  }
+
+  .popup button{
+    padding:10px 22px;
+    border:none;
+    border-radius:999px;
+    background:#22c55e;
+    color:white;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+  }
+</style>
+</head>
+<body>
+
+<button id="openBtn">開啟彈窗</button>
+
+<div class="overlay"></div>
+
+<div class="popup">
+  <h2>👋 Hello</h2>
+  <p>say hello</p>
+  <button id="closeBtn">OK</button>
+</div>
+
+<script>
+$(function(){
+
+  // 開啟（全部都在中間）
+  $("#openBtn").click(function(){
+    $(".overlay").fadeIn(200);
+    $(".popup").fadeIn(200);
+  });
+
+  // 關閉（按 OK 或 遮罩）
+  $("#closeBtn, .overlay").click(function(){
+    $(".popup").fadeOut(200);
+    $(".overlay").fadeOut(200);
+  });
+
+  // ESC 關閉
+  $(document).keydown(function(e){
+    if(e.key === "Escape"){
+      $(".popup, .overlay").fadeOut(200);
+    }
+  });
+
+});
+</script>
+
+</body>
+</html>
